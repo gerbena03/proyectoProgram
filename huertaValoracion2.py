@@ -102,7 +102,7 @@ class horticultura():
             
             self.setIdVariedad(valor)
          
-            print("------------------")
+            print("---------creo est cambio--------")
             
 
         elif param==2:
