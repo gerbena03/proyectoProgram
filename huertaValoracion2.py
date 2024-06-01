@@ -102,7 +102,7 @@ class horticultura():
             
             self.setIdVariedad(valor)
          
-            print("---------creo est cambio--------")
+            print("------------------")
             
 
         elif param==2:
@@ -112,10 +112,10 @@ class horticultura():
             conexion.commit()
             
             for i in cursor:
-        
                 self.variedad=i
             
-        
+            self.setIdVariedad(valor)
+                   
             print("------------------")
 
     
@@ -123,6 +123,34 @@ class horticultura():
         """función que muestra menú labores
         Args: eleccion(int): Menú 2
         """
+
+        def solicitudFecha():
+            print("Cargue la fecha para la labor a realizar:")
+            dia=int(input("Dia(dd): "))
+            mes=int(input("Mes(mm): "))
+            agno=int(input("Año(yyyy)): "))
+            fecha=datetime.date(agno, mes, dia)
+
+            return fecha
+
+        def solicitudParcela():
+            print("Lote a trabajar:")
+            cursor.execute("SELECT idParcela, parcela FROM  parcela")
+            conexion.commit()
+            for x in cursor:
+                    print(x)
+            lote=int(input("Seleccione lote: "))
+            
+            return lote
+
+        def consultaSQL():
+            sql=("INSERT INTO labores(variedad, actividad, fecha, parcela) VALUES (%s,%s,%s,%s)")
+            datos=(self.idVariedad, labor,solicitudFecha(),solicitudParcela())
+            cursor.execute(sql,datos)
+            conexion.commit()
+            
+
+            
         while True:
             print("------------------")
             print("LABORES")
@@ -135,39 +163,34 @@ class horticultura():
            
             
             if labor==1:
-                print("Preparación del Suelo")
-                dia=int(input("Seleccione dia: "))
-                mes=int(input("Seleccione mes: "))
-                agno=int(input("Seleccione año: "))
-                print("Seleccione el lote a trabajar:")
+                print("Preparación del Suelo")                             
                 print("------------------")
-                cursor.execute("SELECT idParcela, parcela FROM  parcela")
-                conexion.commit()
-                for x in cursor:
-                    print(x)
-                lote=int(input("Seleccione lote: "))
-                fecha=datetime.date(agno, mes, mes)
-                print(self.idVariedad)
-                sql=("INSERT INTO labores(variedad, actividad, fecha, parcela) VALUES (%s,%s,%s,%s)")
-                datos=(self.idVariedad, labor,fecha,lote)
-                cursor.execute(sql,datos)
-                conexion.commit()
-
-                print("------------------")
+                consultaSQL()               
+                print("Datos cargados con éxito")
             if labor==2:
                 print("Siembra")
                 print("------------------")
+                consultaSQL()
+                print("Datos cargados con éxito")
             if labor==3:
                 print("Raleo")
                 print("------------------")
+                consultaSQL()
+                print("Datos cargados con éxito")
             if labor ==4:
                 print("Abono")
                 print("------------------")
+                consultaSQL()
+                print("Datos cargados con éxito")
             if labor ==5:
                 print("Cosecha")
                 print("------------------")
+                consultaSQL()
+                print("Datos cargados con éxito")
             if labor==6:
                 print("Riego")
+                consultaSQL()
+                print("Datos cargados con éxito")
             if labor==7:   
                 self.menuDecision()                 
                 #self.menu2()
