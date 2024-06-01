@@ -52,9 +52,6 @@ class horticultura():
         self.fechaCosecha=0
         self.rendimiento=0
         self.variedad=0
-        self.__lista= []
-        self.__listaPV= {}
-        self.__listaOI={}
         self.idVariedad=0
 
 
@@ -65,6 +62,7 @@ class horticultura():
         self.idVariedad=id
 
     def getPrimaveraVerano(self):
+        print("     Variedades Primavera-Verano")
         cursor.execute("SELECT idvariedad,nombreVariedad FROM variedad WHERE estacion=1")
         conexion.commit
 
@@ -74,6 +72,7 @@ class horticultura():
        
 
     def getOtonoInvierno(self):
+        print("     Variedades Otoño-Invierno")
         cursor.execute("SELECT idvariedad,nombreVariedad FROM variedad WHERE estacion=2")
         conexion.commit
 
@@ -91,6 +90,7 @@ class horticultura():
         """función que trae listado de variedades
             Args: eleccion(int): variedades
             """
+
         if param==1:
             valor=int(input(f"Seleccione la variedad a trabajar: {self.getPrimaveraVerano()}\n"))
             consulta1="SELECT nombreVariedad FROM variedad WHERE idvariedad="+str(valor)
@@ -99,7 +99,6 @@ class horticultura():
             
             for i in cursor:
                 self.variedad=i
-            
             self.setIdVariedad(valor)
          
             print("------------------")
@@ -107,13 +106,12 @@ class horticultura():
 
         elif param==2:
             valor=int(input(f"Seleccione la variedad a trabajar: {self.getOtonoInvierno()}\n"))
-            consulta1="SELECT nombreVariedad FROM variedad WHERE idvariedad=" +str(valor)
+            consulta1="SELECT nombreVariedad FROM variedad WHERE idvariedad="+str(valor)
             cursor.execute(consulta1)
             conexion.commit()
             
             for i in cursor:
                 self.variedad=i
-            
             self.setIdVariedad(valor)
                    
             print("------------------")
@@ -192,8 +190,6 @@ class horticultura():
                 consultaSQL()
                 print("Datos cargados con éxito")
             if labor==7:   
-                self.menuDecision()                 
-                #self.menu2()
                 break
         
                 
@@ -220,30 +216,17 @@ class horticultura():
             if opcionMenu2==1:
                 self.menuLabores()
             elif opcionMenu2==2:
-                if self.temporada==1:
-
-                    print("     Aqui se calcula el rendimiento promedio del cultivo de: ", self.variedad)
-                    print("------------------")
-                    
-                elif self.temporada==2:
-                    print("     Aquí se calcula el rendimiento promedio del cultivo de: ", self.variedad )
-                    print("------------------")
-                else:
-                    print("lanzar excepción")
-
-
+                print("     Aqui se calcula el rendimiento promedio del cultivo de: ", self.variedad)
+                print("------------------")
             elif opcionMenu2==3:
                 print("     Características del cultivo de: ", self.variedad)
                 print("------------------")
             elif opcionMenu2==4:
-                print("     Variedades Otoño-Invierno", self.getOtonoInvierno())
-                print("     Variedades Primavera-Verano", self.getPrimaveraVerano())
+                self.getOtonoInvierno()
+                self.getPrimaveraVerano()
                 print("------------------")
-            elif opcionMenu2==5:
-               
+            elif opcionMenu2==5:              
                self.variedadHortaliza(principal())
-               
-
             elif opcionMenu2==6:
                 
                 print("     Gracias por utilizar la aplicación!")
@@ -262,7 +245,6 @@ huerta1=horticultura(principal())
 huerta1.variedadHortaliza(huerta1.getTemporada())
 
 huerta1.menu2()
-
 
 
 
