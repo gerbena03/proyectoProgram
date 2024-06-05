@@ -1,1 +1,1 @@
-SELECT * FROM huerta.rendimiento;
+SELECT * FROM huerta.labores;
