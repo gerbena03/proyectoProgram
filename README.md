@@ -1,8 +1,7 @@
 ![image](https://github.com/gerbena03/proyectoProgram/assets/166568631/4f0f2e7d-2eae-4ad8-8691-8cf73adc2e13)
 ![image](https://github.com/gerbena03/proyectoProgram/assets/166568631/2c398177-eecd-416e-8746-1dc9a915e625)
 
-#BIENVENIDOS A PROYECTO FINAL: LA HUERTA EN TUS MANOS
-<p style="color: blue; font-family: 'Courier New', Courier, monospace;">
+#BIENVENIDOS A PROYECTO FINAL: LA HUERTA EN TUS MANOS <p style="color: blue; font-family: 'Courier New', Courier, monospace;">
 
 
 
