@@ -1,4 +1,3 @@
-
 import datetime
 from database import Database
 from datetime import date
@@ -40,6 +39,7 @@ class Horticultura():
         self.idVariedad=id
 
     def getPrimaveraVerano(self):
+        """método para buscar las variedades primavera-verano en la BD"""
         sql="SELECT idvariedad,nombreVariedad FROM variedad WHERE estacion=1"        
         resultados=self.db.obtenerResultados(sql)
         
@@ -55,6 +55,7 @@ class Horticultura():
        
 
     def getOtonoInvierno(self):
+        """metodo para buscar las variedades otoño-invierno en la BD"""
         sql=("SELECT idvariedad,nombreVariedad FROM variedad WHERE estacion=2")
         resultados=self.db.obtenerResultados(sql)
         
@@ -67,8 +68,7 @@ class Horticultura():
         else:
             print("No hay resultados de variedades en la base de datos")
         return ""
-        
-    
+           
     
     def getTemporada(self):
         return self.temporada
@@ -130,6 +130,7 @@ class Horticultura():
             return lote
 
         def consultaSQL():
+            """metodo que inserta datos en la tabla labores"""
             sql=("INSERT INTO labores(variedad, actividad, fecha, parcela) VALUES (%s,%s,%s,%s)")
             datos=(self.idVariedad, labor,solicitudFecha(),solicitudParcela())
             self.db.ejecutarConsultas(sql,datos)
@@ -147,8 +148,7 @@ class Horticultura():
                     print(labores[0], labores[1])
             else:
                 print("No hay resultados de actividades en la base de datos")
-            
-            
+                       
             labor=int(input("Seleccione el n° de la labor a realizar, o presione 7 para volver al menú anterior:\n"))
            
             
@@ -190,8 +190,8 @@ class Horticultura():
         Args: eleccion(int): Menú 
         """
         print("------------------")
-        print("ACTIVIDADES A REALIZAR PARA EL CULTIVO DE:",  self.variedad , "\n 1. Labores a realizar \n 2. Obtención de Rendimiento \n" 
-        " 3. Características del cultivo \n 4. Listado de las hortalizas cargadas en el sistema\n 5. Cambiar de cultivo\n 6. SALIR")
+        print("ACTIVIDADES A REALIZAR PARA EL CULTIVO DE:",  self.variedad , "\n 1. Labores a realizar \n" 
+        " 2. Características del cultivo \n 3. Borrar labores generadas\n 4. Cambiar de cultivo\n 5. SALIR")
         
     def menu2(self):
         """función que solicita al usuario
@@ -206,9 +206,6 @@ class Horticultura():
             if opcionMenu2==1:
                 self.menuLabores()
             elif opcionMenu2==2:
-                print("     Aqui se calcula el rendimiento promedio del cultivo de: ", self.variedad)
-                print("------------------")
-            elif opcionMenu2==3:
                 print("     Características del cultivo de: ", self.variedad)
                 sql=("""SELECT variedad.nombreVariedad, familia.familia, variedad.resistenciaHeladas, 
                 estacion.estacion, variedad.produccionXMcuadKG
@@ -216,7 +213,7 @@ class Horticultura():
                 WHERE variedad.familia = familia.idfamilia
                 AND	variedad.estacion = estacion.idEstacion
                 AND variedad.idvariedad="""+str(self.idVariedad))
-                valores=Database.ejecutarConsultas(sql)
+                valores=self.db.obtenerResultados(sql)
                 print("--------------------------------------------------------------")  
                 print("  Variedad  Familia   ResistHelada  Estacion    ProducXMCuadKg")
                 print("--------------------------------------------------------------")                
@@ -225,27 +222,47 @@ class Horticultura():
                 print("------------------")
                 print("Labores realizadas en el cultivo de :", self.variedad )
                 print("--------------------------------------------------------------") 
-                sql=("""SELECT actividad.actividades, labores.fecha, parcela.parcela
+                sql="""SELECT actividad.actividades, labores.fecha, parcela.parcela
                 FROM actividad, labores, parcela
                 WHERE actividad.idActividad=labores.actividad AND labores.parcela=parcela.idParcela 
-                AND labores.variedad=""" +str(self.idVariedad)) +"""ORDER BY labores.fecha DESC"""
-                valores=Database.ejecutarConsultas(sql)
-                if valores.rowcount==0:
-                    print("La variedad no tiene labores realizadas")
-                else:
+                AND labores.variedad=""" +str(self.idVariedad) 
+                valores=self.db.obtenerResultados(sql)
+                
+                if valores:
                     for i in valores:
                         print(i)
+                else:
+                    print("La variedad no tiene labores realizadas")
                 print("--------------------------------------------------------------") 
-            elif opcionMenu2==4:
-                self.getOtonoInvierno()
-                self.getPrimaveraVerano()
+            elif opcionMenu2==3:
                 print("------------------")
-            elif opcionMenu2==5:              
+                print("Labores realizadas en los distintos lotes")
+                print("-------------------")
+                sql=("""SELECT labores.idLabores, variedad.nombreVariedad, actividad.actividades, 
+                labores.fecha, parcela.parcela
+                FROM labores
+                JOIN variedad ON labores.variedad= variedad.idvariedad
+                JOIN actividad ON labores.actividad= actividad.idActividad
+                JOIN parcela ON labores.parcela=parcela.idParcela 
+                ORDER BY variedad.nombreVariedad ASC""")
+                valores=self.db.obtenerResultados(sql)
+                print("IDLabor       Variedad       Actividad                     Fecha                 Lote   ")
+                print("-------------------------------------------------------------------------------------------")
+                for labores in valores:                    
+                    print(labores[0], ("\t  "), labores[1], ("\t  "),labores[2], ("\t  "),labores[3], ("\t  "),labores[4])
+                eleccion=input("Seleccione ID de la labor a eliminar:\n")
+                sql="DELETE FROM labores WHERE idLabores="+str(eleccion)
+                if sql:
+                    self.db.ejecutarConsultas(sql)
+                    print("Los datos fueron borrados con éxito")
+                print("------------------")
+            elif opcionMenu2==4:              
                self.variedadHortaliza(principal())
-            elif opcionMenu2==6:
+            elif opcionMenu2==5:
                 self.db.cerrarConexion()              
                 break
                 
+        
             
 
 
